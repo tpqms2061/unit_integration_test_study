@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 public class BookCalculatorTest {
@@ -30,7 +31,28 @@ public class BookCalculatorTest {
 
         book.reduceStock(3);
 
-        assertThat(book.getStock()).isEqualTo(5);
+        assertThat(book.getStock()).isEqualTo(7);
+    }
+
+    @Test
+    void testInsufficientException() {
+        Book book = new Book();
+        book.setStock(2);
+        assertThatThrownBy(() -> book.reduceStock(5))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("재고가 부족합니다");
+    }
+
+    @Test
+    void testStockStatusCheck() {
+        Book insStockBook = new Book();
+        insStockBook.setStock(5);
+
+        Book outofStockBook = new Book();
+        outofStockBook.setStock(0);
+
+        assertThat(insStockBook.isInStock()).isTrue();
+        assertThat(outofStockBook.isInStock()).isFalse();
     }
 
 
